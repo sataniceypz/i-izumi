@@ -1,62 +1,84 @@
 #!/bin/bash
-# Script to set up and deploy Izumi bot in Termux
+# Enhanced script to set up and deploy Izumi bot in Termux
 
-# Step 1: Update and Upgrade Packages
-echo "Updating packages..."
-apt update && apt upgrade -y
+# Function to display a welcome message
+function display_welcome() {
+    clear
+    echo "========================================"
+    echo "      Welcome to the Izumi Bot Setup    "
+    echo "========================================"
+    echo "This script will help you deploy the Izumi bot in Termux."
+    echo "Please follow the prompts to complete the setup."
+    echo ""
+}
 
-# Step 2: Install Required Tools
-echo "Installing required tools..."
-apt install wget openssl-tool proot -y
-hash -r
-wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/Installer/Ubuntu/ubuntu.sh
-bash ubuntu.sh
+# Function to install packages
+function install_packages() {
+    echo "Updating packages..."
+    apt update && apt upgrade -y
 
-# Step 3: Start Ubuntu
-echo "Starting Ubuntu..."
-./start-ubuntu.sh
+    echo "Installing required tools..."
+    apt install wget openssl-tool proot -y
+    hash -r
+    wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/Installer/Ubuntu/ubuntu.sh
+    bash ubuntu.sh
 
-# Step 4: Install Packages in Ubuntu
-echo "Installing packages in Ubuntu..."
-sudo apt update && sudo apt upgrade -y
-sudo apt install sudo -y
-sudo apt install ffmpeg -y
-sudo apt install imagemagick -y
-sudo apt install yarn -y
-sudo apt install git -y
-sudo apt install curl -y
-sudo apt -y remove nodejs
-curl -fsSl https://deb.nodesource.com/setup_lts.x | sudo bash - && sudo apt -y install nodejs
+    echo "Starting Ubuntu..."
+    ./start-ubuntu.sh
 
-# Step 5: Clone the GitHub Repo
-echo "Cloning Izumi bot repository..."
-git clone https://github.com/sataniceypz/Izumi-v3.git
-cd Izumi-v3
+    echo "Installing packages in Ubuntu..."
+    sudo apt update && sudo apt upgrade -y
+    sudo apt install sudo ffmpeg imagemagick yarn git curl -y
+    sudo apt install python3 python3-pip build-essential -y
+    sudo apt install nano vim htop -y  # Additional text editors and monitoring tools
+    sudo apt -y remove nodejs
+    curl -fsSl https://deb.nodesource.com/setup_lts.x | sudo bash - && sudo apt -y install nodejs
+}
 
-# Step 6: Install Node.js Dependencies
-echo "Installing Node.js and dependencies..."
-npm install
+# Function to clone the repository
+function clone_repository() {
+    echo "Cloning Izumi bot repository..."
+    git clone https://github.com/sataniceypz/Izumi-v3.git
+    cd Izumi-v3 || exit
+}
 
-# Step 7: Ask for Configuration Inputs
-echo "Please enter your WhatsApp session ID:"
-read SESSION_ID
+# Function to install Node.js dependencies
+function install_dependencies() {
+    echo "Installing Node.js and dependencies..."
+    npm install
+}
 
-echo "Please enter the command prefix (default: .):"
-read PREFIX
-PREFIX=${PREFIX:-.}  # Default to '.' if no input is provided
+# Function to create the config.env file
+function create_config() {
+    echo "Please enter your WhatsApp session ID:"
+    read -r SESSION_ID
 
-echo "Please enter your SUDO number:"
-read SUDO
+    echo "Please enter the command prefix (default: .):"
+    read -r PREFIX
+    PREFIX=${PREFIX:-.}  # Default to '.' if no input is provided
 
-# Step 8: Create config.env File
-echo "Creating config.env file..."
-{
-  echo "TERMUX=true"
-  echo "SESSION_ID=$SESSION_ID"
-  echo "PREFIX=$PREFIX"
-  echo "SUDO=$SUDO"
-} > config.env
+    echo "Please enter your SUDO number:"
+    read -r SUDO
 
-# Step 9: Start the Bot
-echo "Starting the bot..."
-npm start
+    echo "Creating config.env file..."
+    {
+        echo "TERMUX=true"
+        echo "SESSION_ID=$SESSION_ID"
+        echo "PREFIX=$PREFIX"
+        echo "SUDO=$SUDO"
+    } > config.env
+}
+
+# Function to start the bot
+function start_bot() {
+    echo "Starting the bot..."
+    npm start
+}
+
+# Main script execution
+display_welcome
+install_packages
+clone_repository
+install_dependencies
+create_config
+start_bot
