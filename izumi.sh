@@ -18,21 +18,16 @@ function install_packages() {
     apt update && apt upgrade -y
 
     echo "Installing required tools..."
-    apt install wget openssl-tool proot -y
-    hash -r
-    wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/Installer/Ubuntu/ubuntu.sh
-    bash ubuntu.sh
-
-    echo "Starting Ubuntu..."
-    ./start-ubuntu.sh
-
-    echo "Installing packages in Ubuntu..."
-    sudo apt update && sudo apt upgrade -y
-    sudo apt install sudo ffmpeg imagemagick yarn git curl -y
-    sudo apt install python3 python3-pip build-essential -y
-    sudo apt install nano vim htop -y  # Additional text editors and monitoring tools
-    sudo apt -y remove nodejs
-    curl -fsSl https://deb.nodesource.com/setup_lts.x | sudo bash - && sudo apt -y install nodejs
+    apt install sudo -y
+    apt install ffmpeg -y
+    apt install imagemagick -y
+    apt install yarn -y
+    apt install git -y
+    apt install curl -y
+    
+    # Remove old Node.js version and install the latest LTS version
+    apt -y remove nodejs
+    curl -fsSl https://deb.nodesource.com/setup_lts.x | bash - && apt -y install nodejs
 }
 
 # Function to clone the repository
