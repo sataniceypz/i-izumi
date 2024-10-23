@@ -15,14 +15,11 @@ function display_welcome() {
 # Function to install packages
 function install_packages() {
     echo "Updating packages..."
-    apt update && apt upgrade -y
-
     echo "Installing required tools..."
     apt install sudo -y
     apt install ffmpeg -y
     apt install imagemagick -y
     apt install yarn -y
-    apt install git -y
     apt install curl -y
     
     # Remove old Node.js version and install the latest LTS version
